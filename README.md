@@ -1,4 +1,4 @@
-Para que possamos migrar a instância entre as familias T2 e T3a é necessário que antes realizemos a atualização do dirver ENA e habilitemos o Ena Support para a mesma, dessa forma esse playbook faz toda a parte de atualização e migração de instância de forma atumática.
+A familia T3a é uma fámilia mais nova e com um custo bem inferior a antiga T2. Para que possamos migrar a família sem maiores problemas é necessário a atualização do drive de rede ENA e que habilitemos na máquina o ENA Support para a mesma. Esse playbook faz toda a parte de atualização e migração de instância de forma atumática.
 
 ```
 ansible-playbook -i hosts main.yml

@@ -11,7 +11,7 @@
 - name: Esperando SSH
   local_action:
     module: wait_for
-    host: '{{ ip }}'
+    host: '{{ ansible_ssh_host }}' 
     port: 22
     delay: 30
     state: started

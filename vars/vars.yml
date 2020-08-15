@@ -12,5 +12,4 @@ secret_key:
 region:
 
 #Instance specs
-ip:
 user: 
