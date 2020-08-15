@@ -1,0 +1,3 @@
+---
+- name: Habilitando Ena Support
+  local_action: command aws ec2 modify-instance-attribute --instance-id "{{ instance_id }}" --ena-support

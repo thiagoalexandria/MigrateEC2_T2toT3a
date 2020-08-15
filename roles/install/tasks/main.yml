@@ -1,0 +1,50 @@
+---
+- name: Download ena driver
+  get_url: 
+    url: https://github.com/amzn/amzn-drivers/archive/master.zip 
+    dest: /root/
+
+- name: Descompactando conteudo
+  unarchive:
+    remote_src: yes
+    src: /root/amzn-drivers-master.zip
+    dest: /root
+
+- name: Build ena
+  make:
+    chdir: /root/amzn-drivers-master/kernel/linux/ena
+    target: all
+
+- name:
+  shell: uname -r
+  register: updated_kernel
+
+- name: "Add versão kernel em dummy host"
+  add_host:
+    name:   "kernel_version"
+    kernel:  "{{ updated_kernel.stdout }}"
+
+- name: Copiando arquivo para diretório de módulos
+  copy:
+    remote_src: yes
+    src: /root/amzn-drivers-master/kernel/linux/ena/ena.ko
+    dest: /lib/modules/{{ hostvars['kernel_version']['kernel'] }}/ena.ko
+    owner: root
+    group: root
+
+- name: Inserindo módulo no kernel 
+  shell: insmod /root/amzn-drivers-master/kernel/linux/ena/ena.ko
+
+- name: Criando lista de dependências
+  shell: depmod
+
+- name: Adicionando ena driver no dracut
+  shell: echo 'add_drivers+=" ena "' >> /etc/dracut.conf.d/ena.conf
+    
+- name: Atualizado dracut
+  shell: dracut -f -v
+
+- name: upgrade todos os pacotes
+  yum:
+    name: '*'
+    state: latest

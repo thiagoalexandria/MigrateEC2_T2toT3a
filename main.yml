@@ -1,0 +1,44 @@
+- hosts: all
+  become: yes
+  user: "{{ user }}"
+  vars_files:
+    - vars/vars.yml
+  gather_facts: no
+  pre_tasks:
+  - name: Verificando kernel
+    shell: uname -r
+    register: kernel_version
+  
+  - name:
+    debug:
+      msg: "kernel Version: {{ kernel_version.stdout }}"
+
+  - name: Verificando Ena
+    shell: modinfo ena | egrep "^version:"
+    register: ena_version
+  
+  - name:
+    debug:
+      msg: "Ena version: {{ ena_version.stdout }}"
+
+  - name: 'Atualizando o repo'
+    raw: 'yum update -y'
+
+  - name: 'Instalando Epel'
+    raw: 'yum install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm'
+    ignore_errors: yes
+
+  - name: 'Instalando pacotes necessários'
+    raw: 'yum install -y kernel-devel-$(uname -r) gcc git patch rpm-build wget dkms kernel-devel dracut-config-generic'
+ 
+  roles:
+  - { role: stop, tags: ["stop_instance"]  }
+  - { role: enasupport, tags: ["ena_suport"]  }
+  - { role: start, tags: ["start_instance"] }
+  - { role: install, tags: ["install_ena"]  }
+  - { role: stop, tags: ["stop_instance1"]  }
+  - { role: start, tags: ["start_instance1"]  }
+  - { role: configure, tags: ["configure_ena"]  }
+  - { role: stop, tags: ["stop_instance2"]  }
+  - { role: changetype, tags: ["change_instance"]  }
+  - { role: start, tags: ["start_instance2"]  }

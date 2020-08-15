@@ -1,0 +1,19 @@
+#!/bin/bash
+
+VER=$( grep ^VERSION /root/amzn-drivers-master/kernel/linux/rpm/Makefile | cut -d' ' -f2 )
+cp -a /root/amzn-drivers-master /usr/src/amzn-drivers-${VER}
+cat > /usr/src/amzn-drivers-${VER}/dkms.conf <<EOM
+PACKAGE_NAME="ena"
+PACKAGE_VERSION="$VER"
+CLEAN="make -C kernel/linux/ena clean"
+MAKE="make -C kernel/linux/ena/ BUILD_KERNEL=\${kernelver}"
+BUILT_MODULE_NAME[0]="ena"
+BUILT_MODULE_LOCATION="kernel/linux/ena"
+DEST_MODULE_LOCATION[0]="/updates"
+DEST_MODULE_NAME[0]="ena"
+AUTOINSTALL="yes"
+EOM
+
+dkms add -m amzn-drivers -v $VER
+dkms build -m amzn-drivers -v $VER
+dkms install -m amzn-drivers -v $VER

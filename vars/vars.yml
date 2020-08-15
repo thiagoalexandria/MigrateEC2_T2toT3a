@@ -1,0 +1,16 @@
+#AWS Instance config
+instance_id: 
+  - i-12313535123
+  - i-43212314432
+  - i-48242543534
+
+type: 
+
+#AWS credentials config
+access_key: 
+secret_key: 
+region:
+
+#Instance specs
+ip:
+user: 

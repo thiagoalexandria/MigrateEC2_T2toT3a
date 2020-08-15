@@ -1,0 +1,10 @@
+---
+- name: Stop instance
+  local_action: 
+    module: ec2
+    aws_access_key: '{{ access_key }}'
+    aws_secret_key: '{{ secret_key }}'
+    instance_ids: '{{ instance_id }}'
+    region: '{{ region }}'
+    state: stopped
+    wait: True

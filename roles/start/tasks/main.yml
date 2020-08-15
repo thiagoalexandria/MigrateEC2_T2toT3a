@@ -1,0 +1,17 @@
+---
+- name: Start instance
+  local_action:
+    module: ec2
+    aws_access_key: '{{ access_key }}'
+    aws_secret_key: '{{ secret_key }}'
+    instance_ids: '{{ instance_id }}'
+    region: '{{ region }}'
+    state: running
+    wait: True
+- name: Esperando SSH
+  local_action:
+    module: wait_for
+    host: '{{ ip }}'
+    port: 22
+    delay: 30
+    state: started

@@ -1,0 +1,25 @@
+---
+- name: Copiando script de configuração
+  template:
+    src: configure.sh.j2
+    dest: /root/configure.sh
+    owner: root
+    group: root
+    mode: 0755
+
+- name: Configurando
+  shell: /root/configure.sh
+
+- name: verificando versão atualizada
+  shell: modinfo ena | egrep "^version:"
+  register: new_ena
+
+- name:
+  debug: 
+    msg: "ENA Version: {{ new_ena.stdout }}"
+
+- name: Ajustando net.ifnames grub
+  shell: sed -i '/^GRUB\_CMDLINE\_LINUX/s/\"$/\ net\.ifnames\=0\"/' /etc/default/grub
+
+- name: Regerando arquivos grub
+  shell: grub2-mkconfig -o /boot/grub2/grub.cfg
